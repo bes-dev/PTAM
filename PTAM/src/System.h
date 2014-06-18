@@ -44,9 +44,6 @@ private:
     ATANCamera *mpCamera;
 
     bool mbDone;
-
-    static void GUICommandCallBack(void* ptr, std::string sCommand, std::string sParams);
-
 };
 
 #endif

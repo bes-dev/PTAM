@@ -49,8 +49,3 @@ void System::RunOneFrame(unsigned char *bwImage) {
     mimFrameBW.copy_from(BasicImage<byte>(bwImage,ImageRef(640,480)));
     mpTracker->TrackFrame(mimFrameBW);
 }
-
-void System::GUICommandCallBack(void *ptr, string sCommand, string sParams) {
-    if(sCommand=="quit" || sCommand == "exit")
-        static_cast<System*>(ptr)->mbDone = true;
-}
