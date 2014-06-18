@@ -45,9 +45,11 @@ public:
     Tracker(CVD::ImageRef irVideoSize, const ATANCamera &c, Map &m, MapMaker &mm);
 
     // TrackFrame is the main working part of the tracker: call this every frame.
-    void TrackFrame(CVD::Image<CVD::byte> &imFrame, uint hnd,bool bDraw);
+    void TrackFrame(CVD::Image<CVD::byte> &imFrame);
 
-    inline SE3<> GetCurrentPose() { return mse3CamFromWorld;}
+    inline SE3<> GetCurrentPose() {
+        return mse3CamFromWorld;
+    }
 
     // Gets messages to be printed on-screen for the user.
     std::string GetMessageForUser();
@@ -90,8 +92,6 @@ protected:
     double mdMSDScaledVelocityMagnitude; // Velocity magnitude scaled by relative scene depth.
     bool mbDidCoarse;               // Did tracking use the coarse tracking stage?
 
-    bool mbDraw;                    // Should the tracker draw anything to OpenGL?
-
     // Interface with map maker:
     int mnFrame;                    // Frames processed since last reset
     int mnLastKeyFrameDropped;      // Counter of last keyframe inserted.
@@ -117,12 +117,6 @@ protected:
     // User interaction for initial tracking:
     bool mbUserPressedSpacebar;
     std::ostringstream mMessageForUser;
-
-    // GUI interface:
-    void GUICommandHandler(std::string sCommand, std::string sParams);
-    static void GUICommandCallBack(void* ptr, std::string sCommand, std::string sParams);
-    struct Command {std::string sCommand; std::string sParams; };
-    std::vector<Command> mvQueuedCommands;
 };
 
 #endif

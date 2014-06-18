@@ -78,8 +78,7 @@ void Tracker::Reset() {
 // or not (it should not draw, for example, when AR stuff is being shown.)
 //void Tracker::TrackFrame(Image<byte> &imFrame, bool bDraw)
 
-void Tracker::TrackFrame(Image<byte> &imFrame, uint hnd, bool bDraw) {
-    mbDraw = bDraw;
+void Tracker::TrackFrame(Image<byte> &imFrame) {
     mMessageForUser.str("");
 
     // Wipe the user message clean
@@ -148,13 +147,6 @@ void Tracker::TrackFrame(Image<byte> &imFrame, uint hnd, bool bDraw) {
     else {// If there is no map, try to make one.
         TrackForInitialMap();
     }
-
-    //TODO: BeS: we should delete this
-    // GUI interface
-    while(!mvQueuedCommands.empty()) {
-        GUICommandHandler(mvQueuedCommands.begin()->sCommand, mvQueuedCommands.begin()->sParams);
-        mvQueuedCommands.erase(mvQueuedCommands.begin());
-    }
 }
 
 // Try to relocalise in case tracking was lost.
@@ -174,43 +166,6 @@ bool Tracker::AttemptRecovery() {
     mv6CameraVelocity = Zeros;
     mbJustRecoveredSoUseCoarse = true;
     return true;
-}
-
-// GUI interface. Stuff commands onto the back of a queue so the tracker handles
-// them in its own thread at the end of each frame. Note the charming lack of
-// any thread safety (no lock on mvQueuedCommands).
-void Tracker::GUICommandCallBack(void* ptr, string sCommand, string sParams) {
-    Command c;
-    c.sCommand = sCommand;
-    c.sParams = sParams;
-    ((Tracker*) ptr)->mvQueuedCommands.push_back(c);
-}
-
-// This is called in the tracker's own thread.
-// Called by the callback func..
-void Tracker::GUICommandHandler(string sCommand, string sParams)   {
-    if(sCommand=="Reset") {
-        Reset();
-        return;
-    }
-
-    // KeyPress commands are issued by GLWindow
-    if(sCommand=="KeyPress") {
-        if(sParams == "Space") {
-            mbUserPressedSpacebar = true;
-        } else if(sParams == "r") {
-            Reset();
-        } else if(sParams == "q" || sParams == "Escape") {
-        }
-        return;
-    }
-    if((sCommand=="PokeTracker")) {
-        mbUserPressedSpacebar = true;
-        return;
-    }
-
-    cout << "! Tracker::GUICommandHandler: unhandled command "<< sCommand << endl;
-    exit(1);
 }
 
 // Routine for establishing the initial map. This requires two spacebar presses from the user

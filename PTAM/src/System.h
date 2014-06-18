@@ -26,7 +26,7 @@ class Tracker;
 class System {
 public:
     System();
-    void RunOneFrame(unsigned char *bwImage,uint hnd);
+    void RunOneFrame(unsigned char *bwImage);
     bool Finished() {
         return mbDone;
     }
