@@ -19,6 +19,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 # Target
 
 add_library(ptam ${ptam_cpp} ${ptam_cc} ${ptam_cxx} ${ptam_h})
-target_link_libraries(ptam ${PTAM_DEPENDENCY_LIBS})
+target_link_libraries(ptam cvd ${PTAM_DEPENDENCY_LIBS})
 
 ##################################
