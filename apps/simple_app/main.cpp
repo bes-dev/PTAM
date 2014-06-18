@@ -3,16 +3,18 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "PTAM.h"
 
-int main(int argc, char** argv) {
+int main() {
     ptam::PTAM mPTAM(cv::Size(640, 480));
     cv::VideoCapture cap(1);
     cv::Mat frame;
-    cap >> frame;
+    bool startTracking = false;
     while(true) {
-        mPTAM.process(frame);
+        cap >> frame;
+        if(startTracking) mPTAM.process(frame);
         cv::imshow("frame", frame);
-        int k = cv::waitKey(10);
+        char k = cv::waitKey(10);
         if(k == 's') {
+            if(!startTracking) startTracking = true;
             mPTAM.startTracking();
         } else if(k == 'p') {
             mPTAM.stopTracking();
