@@ -7,8 +7,9 @@
 using namespace std;
 using namespace CVD;
 
-ATANCamera::ATANCamera(string sName) {
-    msName = sName;
+//ATANCamera::ATANCamera(string sName) {
+ATANCamera::ATANCamera() {
+    //msName = sName;
     //	mgvvCameraParams=CameraParameters;
     mgvvCameraParams= TooN::makeVector(0.92295, 1.28292, 0.497764, 0.490052, 0);
     mvImageSize[0] = 640;

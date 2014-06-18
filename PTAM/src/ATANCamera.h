@@ -65,7 +65,8 @@ class CalibImage;
 
 class ATANCamera {
 public:
-    ATANCamera(std::string sName);
+//    ATANCamera(std::string sName);
+    ATANCamera();
 
     // Image size get/set: updates the internal projection params to that target image size.
     void SetImageSize(Vector<2> v2ImageSize);
@@ -167,7 +168,7 @@ protected:
         return(tan(r * mdW) * mdOneOver2Tan);
     }
 
-    std::string msName;
+//    std::string msName;
 
     friend class CameraCalibrator;   // friend declarations allow access to calibration jacobian and camera update function.
     friend class CalibImage;

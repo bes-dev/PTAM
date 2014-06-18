@@ -13,6 +13,10 @@ PTAM::PTAM(cv::Size& frameSize) {
 }
 
 PTAM::~PTAM() {
+    delete mCamera;
+    delete mMap;
+    delete mMapMaker;
+    delete mTracker;
 }
 
 void PTAM::process(const cv::Mat& frame) {
