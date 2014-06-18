@@ -5,10 +5,6 @@
 #include "image.h"
 #include "byte.h"
 
-
-double FindShiTomasiScoreAtPoint(CVD::BasicImage<CVD::byte> &image,
-				 int nHalfBoxSize,
-				 CVD::ImageRef irCenter);
-
+double FindShiTomasiScoreAtPoint(CVD::BasicImage<CVD::byte> &image, int nHalfBoxSize, CVD::ImageRef irCenter);
 
 #endif

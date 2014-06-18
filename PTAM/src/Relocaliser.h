@@ -18,8 +18,7 @@
 #include "globals.h"
 
 
-class Relocaliser
-{
+class Relocaliser {
 public:
   Relocaliser(Map &map, ATANCamera &camera);
   bool AttemptRecovery(KeyFrame &k);
@@ -36,12 +35,3 @@ protected:
 
 };
 #endif
-
-
-
-
-
-
-
-
-
