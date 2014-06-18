@@ -11,7 +11,7 @@ namespace ptam {
 
 class PTAM {
 public:
-    PTAM(cv::Size& frameSize);
+    PTAM(cv::Size frameSize);
     ~PTAM();
 
     void process(const cv::Mat& frame);

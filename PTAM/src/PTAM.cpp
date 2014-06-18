@@ -3,7 +3,7 @@
 
 namespace ptam {
 
-PTAM::PTAM(cv::Size& frameSize) {
+PTAM::PTAM(cv::Size frameSize) {
     mCamera = new ATANCamera();
     mMap = new Map;
     mMapMaker = new MapMaker(*mMap, *mCamera);
