@@ -62,12 +62,6 @@ void MapMaker::run() {
         sleep(5); // Sleep not really necessary, especially if mapmaker is busy
         CHECK_RESET;
 
-        // Handle any GUI commands encountered..
-        while(!mvQueuedCommands.empty()) {
-            GUICommandHandler(mvQueuedCommands.begin()->sCommand, mvQueuedCommands.begin()->sParams);
-            mvQueuedCommands.erase(mvQueuedCommands.begin());
-        }
-
         // Nothing to do if there is no map yet!
         if(!mMap.IsGood()) {
             continue;
@@ -1122,40 +1116,26 @@ void MapMaker::RefreshSceneDepth(KeyFrame *pKF) {
     pKF->dSceneDepthSigma = sqrt((dSumDepthSquared / nMeas) - (pKF->dSceneDepthMean) * (pKF->dSceneDepthMean));
 }
 
-//TODO: BeS: we should delete this
-void MapMaker::GUICommandCallBack(void* ptr, string sCommand, string sParams) {
-    Command c;
-    c.sCommand = sCommand;
-    c.sParams = sParams;
-    ((MapMaker*) ptr)->mvQueuedCommands.push_back(c);
-}
-
-// Called by the callback func..
-void MapMaker::GUICommandHandler(string sCommand, string sParams) {
-    if(sCommand=="SaveMap") {
-        LOG("  MapMaker: Saving the map.... ");
-        ofstream ofs("map.dump");
-        for(unsigned int i=0; i<mMap.vpPoints.size(); i++) {
-            ofs << mMap.vpPoints[i]->v3WorldPos << "  ";
-            ofs << mMap.vpPoints[i]->nSourceLevel << endl;
-        }
-        ofs.close();
-
-        for(unsigned int i=0; i<mMap.vpKeyFrames.size(); i++) {
-            ostringstream ost1;
-            ost1 << "keyframes/" << i << ".jpg";
-
-            ostringstream ost2;
-            ost2 << "keyframes/" << i << ".info";
-            ofstream ofs2;
-            ofs2.open(ost2.str().c_str());
-            ofs2 << mMap.vpKeyFrames[i]->se3CfromW << endl;
-            ofs2.close();
-        }
-        LOG("  ... done saving map.");
-        return;
+void MapMaker::save(std::string path) {
+    LOG("  MapMaker: Saving the map.... ");
+    ofstream ofs(path);
+    for(unsigned int i=0; i<mMap.vpPoints.size(); i++) {
+        ofs << mMap.vpPoints[i]->v3WorldPos << "  ";
+        ofs << mMap.vpPoints[i]->nSourceLevel << endl;
     }
+    ofs.close();
 
-    LOG("! MapMaker::GUICommandHandler: unhandled command %s", sCommand.c_str());
-    exit(1);
+    for(unsigned int i=0; i<mMap.vpKeyFrames.size(); i++) {
+        ostringstream ost1;
+        ost1 << "keyframes/" << i << ".jpg";
+
+        ostringstream ost2;
+        ost2 << "keyframes/" << i << ".info";
+        ofstream ofs2;
+        ofs2.open(ost2.str().c_str());
+        ofs2 << mMap.vpKeyFrames[i]->se3CfromW << endl;
+        ofs2.close();
+    }
+    LOG("  ... done saving map.");
+    return;
 }

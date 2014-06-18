@@ -57,6 +57,9 @@ public:
     bool NeedNewKeyFrame(KeyFrame &kCurrent);            // Is it a good camera pose to add another KeyFrame?
     bool IsDistanceToNearestKeyFrameExcessive(KeyFrame &kCurrent);  // Is the camera far away from the nearest KeyFrame (i.e. maybe lost?)
 
+    //save map in file
+    void save(std::string path);
+
 protected:
 
     Map &mMap;               // The map
@@ -97,14 +100,6 @@ protected:
     KeyFrame* ClosestKeyFrame(KeyFrame &k);
     std::vector<KeyFrame*> NClosestKeyFrames(KeyFrame &k, unsigned int N);
     void RefreshSceneDepth(KeyFrame *pKF);
-
-
-    // GUI Interface:
-    void GUICommandHandler(std::string sCommand, std::string sParams);
-    static void GUICommandCallBack(void* ptr, std::string sCommand, std::string sParams);
-    struct Command {std::string sCommand; std::string sParams; };
-    std::vector<Command> mvQueuedCommands;
-
 
     // Member variables:
     std::vector<KeyFrame*> mvpKeyFrameQueue;  // Queue of keyframes from the tracker waiting to be processed
