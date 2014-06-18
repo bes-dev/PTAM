@@ -825,4 +825,8 @@ void Tracker::CalcSBIRotation() {
     mv6SBIRot = se3Adjust.ln();
 }
 
+KeyFrame& Tracker::getCurrentKeyFrame() {
+    return mCurrentKF;
+}
+
 ImageRef TrackerData::irImageSize;  // Static member of TrackerData lives here

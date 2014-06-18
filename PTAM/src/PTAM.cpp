@@ -1,5 +1,6 @@
 #include "PTAM.h"
 #include "image.h"
+#include "KeyFrame.h"
 
 namespace ptam {
 

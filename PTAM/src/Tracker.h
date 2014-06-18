@@ -55,6 +55,8 @@ public:
     void StartTracking();
     void StopTracking();
 
+    KeyFrame& getCurrentKeyFrame();
+
 protected:
     KeyFrame mCurrentKF;            // The current working frame as a keyframe struct
 
