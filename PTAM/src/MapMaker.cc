@@ -5,6 +5,7 @@
 #include "PatchFinder.h"
 #include "SmallMatrixOpts.h"
 #include "HomographyInit.h"
+#include "Log.h"
 
 #include "vector_image_ref.h"
 #include "vision.h"
@@ -152,9 +153,9 @@ void MapMaker::HandleBadPoints() {
 MapMaker::~MapMaker() {
     mbBundleAbortRequested = true;
     stop(); // makes shouldStop() return true
-    cout << "Waiting for mapmaker to die.." << endl;
+    LOG("Waiting for mapmaker to die..");
     join();
-    cout << " .. mapmaker has died." << endl;
+    LOG(" .. mapmaker has died.");
 }
 
 
@@ -204,14 +205,14 @@ bool MapMaker::InitFromStereo(KeyFrame &kF,
     HomographyInit HomographyInit;
     bGood = HomographyInit.Compute(vMatches, 5.0, se3);
     if(!bGood) {
-        cout << "  Could not init from stereo pair, try again." << endl;
+        LOG("  Could not init from stereo pair, try again.");
         return false;
     }
 
     // Check that the initialiser estimated a non-zero baseline
     double dTransMagn = sqrt(se3.get_translation() * se3.get_translation());
     if(dTransMagn == 0) {
-        cout << "  Estimated zero baseline from stereo pair, try again." << endl;
+        LOG("  Estimated zero baseline from stereo pair, try again.");
         return false;
     }
     // change the scale of the map so the second camera is wiggleScale away from the first
@@ -322,7 +323,7 @@ bool MapMaker::InitFromStereo(KeyFrame &kF,
     mMap.bGood = true;
     se3TrackerPose = pkSecond->se3CfromW;
 
-    cout << "  MapMaker: made initial map with " << mMap.vpPoints.size() << " points." << endl;
+    LOG("  MapMaker: made initial map with %d points.", mMap.vpPoints.size());
     return true;
 }
 
@@ -499,7 +500,7 @@ bool MapMaker::AddPointEpipolar(KeyFrame &kSrc, KeyFrame &kTarget, int nLevel, i
     Vector<2> v2AlongProjectedLine = v2A-v2B;
 
     if(v2AlongProjectedLine * v2AlongProjectedLine < 0.00000001) {
-        cout << "v2AlongProjectedLine too small." << endl;
+        LOG("v2AlongProjectedLine too small.");
         return false;
     }
     normalize(v2AlongProjectedLine);
@@ -800,8 +801,8 @@ void MapMaker::BundleAdjust(set<KeyFrame*> sAdjustSet, set<KeyFrame*> sFixedSet,
         // Crap: - LM Ran into a serious problem!
         // This is probably because the initial stereo was messed up.
         // Get rid of this map and start again!
-        cout << "!! MapMaker: Cholesky failure in bundle adjust. " << endl
-             << "   The map is probably corrupt: Ditching the map. " << endl;
+        LOG("!! MapMaker: Cholesky failure in bundle adjust. ");
+        LOG("   The map is probably corrupt: Ditching the map.");
         mbResetRequested = true;
         return;
     }
@@ -998,7 +999,7 @@ bool MapMaker::IsDistanceToNearestKeyFrameExcessive(KeyFrame &kCurrent) {
 SE3<> MapMaker::CalcPlaneAligner() {
     unsigned int nPoints = mMap.vpPoints.size();
     if(nPoints < 10) {
-        cout << "  MapMaker: CalcPlane: too few points to calc plane." << endl;
+        LOG("  MapMaker: CalcPlane: too few points to calc plane.");
         return SE3<>();
     }
 
@@ -1121,6 +1122,7 @@ void MapMaker::RefreshSceneDepth(KeyFrame *pKF) {
     pKF->dSceneDepthSigma = sqrt((dSumDepthSquared / nMeas) - (pKF->dSceneDepthMean) * (pKF->dSceneDepthMean));
 }
 
+//TODO: BeS: we should delete this
 void MapMaker::GUICommandCallBack(void* ptr, string sCommand, string sParams) {
     Command c;
     c.sCommand = sCommand;
@@ -1131,7 +1133,7 @@ void MapMaker::GUICommandCallBack(void* ptr, string sCommand, string sParams) {
 // Called by the callback func..
 void MapMaker::GUICommandHandler(string sCommand, string sParams) {
     if(sCommand=="SaveMap") {
-        cout << "  MapMaker: Saving the map.... " << endl;
+        LOG("  MapMaker: Saving the map.... ");
         ofstream ofs("map.dump");
         for(unsigned int i=0; i<mMap.vpPoints.size(); i++) {
             ofs << mMap.vpPoints[i]->v3WorldPos << "  ";
@@ -1150,10 +1152,10 @@ void MapMaker::GUICommandHandler(string sCommand, string sParams) {
             ofs2 << mMap.vpKeyFrames[i]->se3CfromW << endl;
             ofs2.close();
         }
-        cout << "  ... done saving map." << endl;
+        LOG("  ... done saving map.");
         return;
     }
 
-    cout << "! MapMaker::GUICommandHandler: unhandled command "<< sCommand << endl;
+    LOG("! MapMaker::GUICommandHandler: unhandled command %s", sCommand.c_str());
     exit(1);
 }

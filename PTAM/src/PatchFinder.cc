@@ -258,10 +258,6 @@ void PatchFinder::MakeSubPixTemplate() {
     // Invert JTJ..
     Cholesky<3> chol(m3H);
     mm3HInv = chol.get_inverse();
-    // TOON2 Does not have a get_rank for cholesky
-    // int nRank = chol.get_rank();
-    // if(nRank < 3)
-    // cout << "BAD RANK IN MAKESUBPIXELTEMPLATE!!!!" << endl; // This does not happen often (almost never!)
 
     mv2SubPixPos = mv2CoarsePos; // Start the sub-pixel search at the result of the coarse search..
     mdMeanDiff = 0.0;

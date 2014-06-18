@@ -7,6 +7,7 @@
 #include "SymEigen.h"
 #include "wls.h"
 #include "MEstimator.h"
+#include "Log.h"
 
 using namespace std;
 bool HomographyInit::IsHomographyInlier(Matrix<3> m3Homography, HomographyMatch match) {
@@ -115,7 +116,7 @@ Matrix<3> HomographyInit::HomographyFromMatches(vector<HomographyMatch> vMatches
     m3Homography[1] = vH.slice<3,3>();
     m3Homography[2] = vH.slice<6,3>();
     return m3Homography;
-};
+}
 
 // Throughout the whole thing,
 // SecondView = Homography * FirstView
@@ -252,7 +253,7 @@ void HomographyInit::DecomposeHomography() {
     }
 
     if(nCase != 1) {
-        cout << "  Homographyinit: This motion case is not implemented or is degenerate. Try again. " << endl;
+        LOG("  Homographyinit: This motion case is not implemented or is degenerate. Try again. ");
         return;
     }
 

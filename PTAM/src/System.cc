@@ -48,7 +48,6 @@ void System::RunOneFrame(unsigned char *bwImage) {
     // Grab video frame in black and white from videobuffer
     mimFrameBW.copy_from(BasicImage<byte>(bwImage,ImageRef(640,480)));
     mpTracker->TrackFrame(mimFrameBW);
-    string s=mpTracker->GetMessageForUser();
 }
 
 void System::GUICommandCallBack(void *ptr, string sCommand, string sParams) {

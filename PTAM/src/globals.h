@@ -6,7 +6,6 @@
 #define NUMTRACKERCAMPARAMETERS 5
 const TooN::Vector<NUMTRACKERCAMPARAMETERS> CameraParameters;
 
-
 const double MapMakerMaxKFDistWiggleMult =2;
 const int MapMakerPlaneAlignerRansacs = 100;
 const double Reloc2MaxScore = 9e6;

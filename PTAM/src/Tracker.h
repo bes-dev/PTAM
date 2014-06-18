@@ -52,7 +52,6 @@ public:
     }
 
     // Gets messages to be printed on-screen for the user.
-    std::string GetMessageForUser();
     void StartTracking();
     void StopTracking();
 
@@ -116,7 +115,6 @@ protected:
 
     // User interaction for initial tracking:
     bool mbUserPressedSpacebar;
-    std::ostringstream mMessageForUser;
 };
 
 #endif

@@ -5,14 +5,13 @@
 #include "Cholesky.h"
 #include <fstream>
 #include <iomanip>
+#include "Log.h"
 
 using namespace std;
 
 #ifdef WIN32
 inline bool isnan(double d) {return !(d==d);}
 #endif
-
-#define cout if(mgvnBundleCout) cout
 
 // Some inlines which replace standard matrix multiplications 
 // with LL-triangle-only versions.
@@ -38,7 +37,6 @@ Bundle::Bundle(const ATANCamera &TCam) : mCamera(TCam) {
     mnStartRow = 0;
     mgvnMaxIterations=BundleMaxIterations;
     mgvdUpdateConvergenceLimit= BundleUpdateSquaredConvergenceLimit;
-    mgvnBundleCout = BundleCout;
 }
 
 // Add a camera to the system, return value is the bundle adjuster's ID for the camera
@@ -130,8 +128,8 @@ int Bundle::Compute(bool *pbAbortSignal) {
         } else if(gvsMEstimator == "Huber") {
             bNoError = Do_LM_Step<Huber>(pbAbortSignal);
         } else {
-            cout << "Invalid BundleMEstimator selected !! " << endl;
-            cout << "Defaulting to Tukey." << endl;
+            LOG("Invalid BundleMEstimator selected !! ");
+            LOG("Defaulting to Tukey.");
             gvsMEstimator = "Tukey";
             bNoError = Do_LM_Step<Tukey>(pbAbortSignal);
         };
@@ -142,9 +140,9 @@ int Bundle::Compute(bool *pbAbortSignal) {
     }
 
     if(mbHitMaxIterations) {
-        cout << "  Hit max iterations." << endl;
+        LOG("Hit max iterations.");
     }
-    cout << "Final Sigma Squared: " << mdSigmaSquared << " (= " << sqrt(mdSigmaSquared) / 4.685 << " pixels.)" << endl;
+    LOG("Final Sigma Squared: %f (=%f pixels.)", mdSigmaSquared, sqrt(mdSigmaSquared) / 4.685);
     return mnAccepted;
 }
 
@@ -447,12 +445,12 @@ bool Bundle::Do_LM_Step(bool *pbAbortSignal) {
         // Calculate new error by re-projecting, doing tukey, etc etc:
         dNewError = FindNewError<MEstimator>();
 
-        cout <<setprecision(1) << "L" << mdLambda << setprecision(3) <<  "\tOld " << dCurrentError << "  New " << dNewError << "  Diff " << dCurrentError - dNewError << "\t";
+        LOG("L%f\tOld %f New %f Diff %f", mdLambda, dCurrentError, dNewError, dCurrentError - dNewError);
 
         // Was the step good? If not, modify lambda and try again!!
         // (if it was good, will break from this loop.)
         if(dNewError > dCurrentError) {
-            cout << " TRY AGAIN " << endl;
+            LOG(" TRY AGAIN ");
             ModifyLambda_BadStep();
         };
 
@@ -464,13 +462,15 @@ bool Bundle::Do_LM_Step(bool *pbAbortSignal) {
 
     // Was the last step a good one?
     if(dNewError < dCurrentError) {
-        cout << " WINNER            ------------ " << endl;
+        LOG(" WINNER            ------------ ");
         // Woo! got somewhere. Update lambda and make changes permanent.
         ModifyLambda_GoodStep();
-        for(unsigned int j=0; j<mvCameras.size(); j++)
+        for(unsigned int j=0; j<mvCameras.size(); j++) {
             mvCameras[j].se3CfW = mvCameras[j].se3CfWNew;
-        for(unsigned int i=0; i<mvPoints.size(); i++)
+        }
+        for(unsigned int i=0; i<mvPoints.size(); i++) {
             mvPoints[i].v3Pos = mvPoints[i].v3PosNew;
+        }
         mnAccepted++;
     }
 
@@ -490,7 +490,7 @@ bool Bundle::Do_LM_Step(bool *pbAbortSignal) {
         mMeasList.erase(vit[i]);
     }
 
-    cout << "Nuked " << vit.size() << " measurements." << endl;
+    LOG( "Nuked %d measurements.", vit.size());
     return true;
 }
 
@@ -507,7 +507,6 @@ double Bundle::FindNewError() {
         Vector<3> v3Cam = mvCameras[meas.c].se3CfWNew * mvPoints[meas.p].v3PosNew;
         if(v3Cam[2] <= 0) {
             dNewError += 1.0;
-            cout << ".";
             continue;
         }
         Vector<2> v2ImPlane = project(v3Cam);

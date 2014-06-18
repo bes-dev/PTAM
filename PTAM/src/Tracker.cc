@@ -7,6 +7,7 @@
 #include "PatchFinder.h"
 #include "TrackerData.h"
 #include "globals.h"
+#include "Log.h"
 
 #include "utility.h"
 #include "fast_corner.h"
@@ -79,10 +80,6 @@ void Tracker::Reset() {
 //void Tracker::TrackFrame(Image<byte> &imFrame, bool bDraw)
 
 void Tracker::TrackFrame(Image<byte> &imFrame) {
-    mMessageForUser.str("");
-
-    // Wipe the user message clean
-
     // Take the input video image, and convert it into the tracker's keyframe struct
     // This does things like generate the image pyramid and find FAST corners
     mCurrentKF.mMeasurements.clear();
@@ -117,15 +114,20 @@ void Tracker::TrackFrame(Image<byte> &imFrame) {
             AssessTrackingQuality();  //  Check if we're lost or if tracking is poor.
 
             { // Provide some feedback for the user:
-                mMessageForUser << "Tracking Map, quality ";
-                if(mTrackingQuality == GOOD)  mMessageForUser << "good.";
-                if(mTrackingQuality == DODGY) mMessageForUser << "poor.";
-                if(mTrackingQuality == BAD)   mMessageForUser << "bad.";
-                mMessageForUser << " Found:";
-                for(int i=0; i<LEVELS; i++) {
-                    mMessageForUser << " " << manMeasFound[i] << "/" << manMeasAttempted[i];
+                if(mTrackingQuality == GOOD) {
+                    LOG("Tracking quality = good.");
                 }
-                mMessageForUser << " Map: " << mMap.vpPoints.size() << "P, " << mMap.vpKeyFrames.size() << "KF";
+                if(mTrackingQuality == DODGY) {
+                    LOG("Tracking quality = poor.");
+                }
+                if(mTrackingQuality == BAD) {
+                    LOG("Tracking quality = bad.");
+                }
+
+                for(int i=0; i<LEVELS; i++) {
+                    LOG("Find: %d / %d ", manMeasFound[i], manMeasAttempted[i]);
+                }
+                LOG(" Map: %d P, %d KF", mMap.vpPoints.size(), mMap.vpKeyFrames.size());
             }
 
             // Heuristics to check if a key-frame should be added to the map:
@@ -133,11 +135,11 @@ void Tracker::TrackFrame(Image<byte> &imFrame) {
                     mMapMaker.NeedNewKeyFrame(mCurrentKF) &&
                     mnFrame - mnLastKeyFrameDropped > 20  &&
                     mMapMaker.QueueSize() < 3) {
-                mMessageForUser << " Adding key-frame.";
+                LOG(" Adding key-frame.");
                 AddNewKeyFrame();
             }
         } else { // what if there is a map, but tracking has been lost?
-            mMessageForUser << "** Attempting recovery **.";
+            LOG("** Attempting recovery **.");
             if(AttemptRecovery()) {
                 TrackMap();
                 AssessTrackingQuality();
@@ -185,7 +187,7 @@ void Tracker::TrackForInitialMap() {
             TrailTracking_Start();
             mnInitialStage = TRAIL_TRACKING_STARTED;
         } else {
-            mMessageForUser << "Point camera at planar scene and press spacebar to start tracking for initial map." << endl;
+            LOG("Point camera at planar scene and press spacebar to start tracking for initial map.");
         }
         return;
     }
@@ -207,7 +209,7 @@ void Tracker::TrackForInitialMap() {
             mMapMaker.InitFromStereo(mFirstKF, mCurrentKF, vMatches, mse3CamFromWorld);  // This will take some time!
             mnInitialStage = TRAIL_TRACKING_COMPLETE;
         } else {
-            mMessageForUser << "Translate the camera slowly sideways, and press spacebar again to perform stereo init." << endl;
+            LOG("Translate the camera slowly sideways, and press spacebar again to perform stereo init.");
         }
     }
 }
@@ -638,7 +640,7 @@ Vector<6> Tracker::CalcPoseUpdate(vector<TrackerData*> vTD, double dOverrideSigm
     } else if(gvsEstimator == "Huber") {
         nEstimator = 2;
     } else {
-        cout << "Invalid TrackerMEstimator, choices are Tukey, Cauchy, Huber" << endl;
+        LOG("Invalid TrackerMEstimator, choices are Tukey, Cauchy, Huber");
         nEstimator = 0;
         gvsEstimator = "Tukey";
     }
@@ -813,10 +815,6 @@ void Tracker::AssessTrackingQuality() {
     } else {
         mnLostFrames = 0;
     }
-}
-
-string Tracker::GetMessageForUser() {
-    return mMessageForUser.str();
 }
 
 void Tracker::CalcSBIRotation() {

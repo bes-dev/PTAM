@@ -143,7 +143,6 @@ protected:
 
     int mgvnMaxIterations;
     double mgvdUpdateConvergenceLimit;
-    int mgvnBundleCout;
 
     bool *mpbAbortSignal;
 };
