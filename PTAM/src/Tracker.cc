@@ -139,7 +139,8 @@ void Tracker::TrackFrame(Image<byte> &imFrame) {
                 LOG(" Adding key-frame.");
                 AddNewKeyFrame();
             }
-        } else { // what if there is a map, but tracking has been lost?
+        } else {
+            // what if there is a map, but tracking has been lost?
             LOG("** Attempting recovery **.");
             if(AttemptRecovery()) {
                 TrackMap();
@@ -345,12 +346,12 @@ void Tracker::TrackMap() {
     vector<TrackerData*> vIterationSet;
 
     // Tunable parameters to do with the coarse tracking stage:
-    static unsigned int gvnCoarseMin=TrackerCoarseMin;   // Min number of large-scale features for coarse stage
-    static unsigned int gvnCoarseMax=TrackerCoarseMax;   // Max number of large-scale features for coarse stage
-    static unsigned int gvnCoarseRange=TrackerCoarseRange;       // Pixel search radius for coarse features
-    static int gvnCoarseSubPixIts=TrackerCoarseSubPixIts; // Max sub-pixel iterations for coarse features
-    static int gvnCoarseDisabled=TrackerDisableCoarse;    // Set this to 1 to disable coarse stage (except after recovery)
-    static double gvdCoarseMinVel=TrackerCoarseMinVelocity;  // Speed above which coarse stage is used.
+    static unsigned int gvnCoarseMin = TrackerCoarseMin;   // Min number of large-scale features for coarse stage
+    static unsigned int gvnCoarseMax = TrackerCoarseMax;   // Max number of large-scale features for coarse stage
+    static unsigned int gvnCoarseRange = TrackerCoarseRange;       // Pixel search radius for coarse features
+    static int gvnCoarseSubPixIts = TrackerCoarseSubPixIts; // Max sub-pixel iterations for coarse features
+    static int gvnCoarseDisabled = TrackerDisableCoarse;    // Set this to 1 to disable coarse stage (except after recovery)
+    static double gvdCoarseMinVel = TrackerCoarseMinVelocity;  // Speed above which coarse stage is used.
 
     unsigned int nCoarseMax = gvnCoarseMax;
     unsigned int nCoarseRange = gvnCoarseRange;
