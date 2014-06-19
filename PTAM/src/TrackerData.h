@@ -103,13 +103,4 @@ struct TrackerData {
     static CVD::ImageRef irImageSize;
 };
 
-
-
-
-
-
 #endif
-
-
-
-
