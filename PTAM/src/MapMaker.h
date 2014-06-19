@@ -56,12 +56,9 @@ public:
     int  QueueSize() { return mvpKeyFrameQueue.size() ;} // How many KFs in the queue waiting to be added?
     bool NeedNewKeyFrame(KeyFrame &kCurrent);            // Is it a good camera pose to add another KeyFrame?
     bool IsDistanceToNearestKeyFrameExcessive(KeyFrame &kCurrent);  // Is the camera far away from the nearest KeyFrame (i.e. maybe lost?)
-
-    //save map in file
-    void save(std::string path);
+    void save(std::string path); //save MapMaker in file
 
 protected:
-
     Map &mMap;               // The map
     ATANCamera mCamera;      // Same as the tracker's camera: N.B. not a reference variable!
     virtual void run();      // The MapMaker thread code lives here
@@ -121,8 +118,6 @@ protected:
     bool mbBundleAbortRequested;      // We should stop bundle adjustment
     bool mbBundleRunning;             // Bundle adjustment is running
     bool mbBundleRunningIsRecent;     //    ... and it's a local bundle adjustment.
-
-
 };
 
 #endif
