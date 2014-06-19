@@ -51,6 +51,15 @@ std::vector<float> PTAM::getPose() {
     return pose;
 }
 
+std::vector<cv::Point2f> PTAM::getCorners() {
+    std::vector<cv::Point2f> points;
+    KeyFrame kf = mTracker->getCurrentKeyFrame();
+    for(int i = 0; i < kf.aLevels[0].vCorners.size(); i++) {
+        points.push_back(cv::Point2f(kf.aLevels[0].vCorners[i].x, kf.aLevels[0].vCorners[i].y));
+    }
+    return points;
+}
+
 void PTAM::convertOpenCVToCvdByte(const cv::Mat& in, CVD::Image<CVD::byte>& out) {
     cv::Mat clone = in.clone();
     cv::Mat_<cv::Vec3b>& frame_p = (cv::Mat_<cv::Vec3b>&)clone;
