@@ -56,6 +56,7 @@ public:
     void StopTracking();
 
     KeyFrame& getCurrentKeyFrame();
+    std::vector<TrackerData*> mSet;
 
 protected:
     KeyFrame mCurrentKF;            // The current working frame as a keyframe struct

@@ -574,6 +574,7 @@ void Tracker::TrackMap() {
             mCurrentKF.dSceneDepthSigma = sqrt((dSumSq / nNum) - (mCurrentKF.dSceneDepthMean) * (mCurrentKF.dSceneDepthMean));
         }
     }
+    mSet = vIterationSet;
 }
 
 // Find points in the image. Uses the PatchFiner struct stored in TrackerData

@@ -12,10 +12,6 @@ int main() {
         cap >> frame;
         if(startTracking) {
             mPTAM.process(frame);
-            std::vector<cv::Point2f> corners = mPTAM.getCorners();
-            for(int i = 0; i < corners.size(); i++) {
-                cv::circle(frame, corners[i], 2, cv::Scalar(255, 0, 255));
-            }
         }
         cv::imshow("frame", frame);
         char k = cv::waitKey(10);
