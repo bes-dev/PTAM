@@ -177,10 +177,7 @@ Vector<3> MapMaker::ReprojectPoint(SE3<> se3AfromB, const Vector<2> &v2A, const 
 
 // InitFromStereo() generates the initial match from two keyframes
 // and a vector of image correspondences. Uses the 
-bool MapMaker::InitFromStereo(KeyFrame &kF,
-                              KeyFrame &kS,
-                              vector<pair<ImageRef, ImageRef> > &vTrailMatches,
-                              SE3<> &se3TrackerPose) {
+bool MapMaker::InitFromStereo(KeyFrame &kF, KeyFrame &kS, vector<pair<ImageRef, ImageRef> > &vTrailMatches, SE3<> &se3TrackerPose) {
     mdWiggleScale = mgvdWiggleScale; // Cache this for the new map.
 
     mCamera.SetImageSize(kF.aLevels[0].im.size());

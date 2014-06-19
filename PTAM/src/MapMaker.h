@@ -41,15 +41,7 @@ public:
     ~MapMaker();
 
     // Make a map from scratch. Called by the tracker.
-    bool InitFromStereo(KeyFrame &kFirst, KeyFrame &kSecond,
-                        std::vector<std::pair<CVD::ImageRef, CVD::ImageRef> > &vMatches,
-                        SE3<> &se3CameraPos);
-
-    bool InitFromStereo_OLD(KeyFrame &kFirst, KeyFrame &kSecond,  // EXPERIMENTAL HACK
-                            std::vector<std::pair<CVD::ImageRef, CVD::ImageRef> > &vMatches,
-                            SE3<> &se3CameraPos);
-
-
+    bool InitFromStereo(KeyFrame &kFirst, KeyFrame &kSecond, std::vector<std::pair<CVD::ImageRef, CVD::ImageRef> > &vMatches, SE3<> &se3CameraPos);
     void AddKeyFrame(KeyFrame &k);   // Add a key-frame to the map. Called by the tracker.
     void RequestReset();   // Request that the we reset. Called by the tracker.
     bool ResetDone();      // Returns true if the has been done.

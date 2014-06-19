@@ -103,7 +103,8 @@ void Tracker::TrackFrame(Image<byte> &imFrame) {
 
     // Decide what to do - if there is a map, try to track the map ...
     if(mMap.IsGood()) {
-        if(1) { //mnLostFrames < 3)  // .. but only if we're not lost!
+        //if(1) { //mnLostFrames < 3)  // .. but only if we're not lost!
+        if(mnLostFrames < 3) { // .. but only if we're not lost!
             if(mbUseSBIInit) {
                 CalcSBIRotation();
             }

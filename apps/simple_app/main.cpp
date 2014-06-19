@@ -5,7 +5,7 @@
 
 int main() {
     ptam::PTAM mPTAM(cv::Size(640, 480));
-    cv::VideoCapture cap(0);
+    cv::VideoCapture cap(1);
     cv::Mat frame;
     bool startTracking = false;
     while(true) {
