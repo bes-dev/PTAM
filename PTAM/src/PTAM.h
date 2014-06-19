@@ -19,6 +19,7 @@ public:
     void stopTracking();
 
     std::vector<float> getPose();
+    std::vector<cv::Point2f> getPoints();
 private:
     Map *mMap;
     MapMaker *mMapMaker;

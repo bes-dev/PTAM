@@ -537,6 +537,19 @@ void Tracker::TrackMap() {
         v6LastUpdate = v6Update;
     }
 
+    {
+        cvPoints.clear();
+        for(vector<TrackerData*>::reverse_iterator it = vIterationSet.rbegin(); it!= vIterationSet.rend(); it++) {
+            if(! (*it)->bFound) {
+                continue;
+            }
+            cv::Point2f tmp;
+            tmp.x = (float)(*it)->v2Image[0];
+            tmp.y = (float)(*it)->v2Image[1];
+            cvPoints.push_back(tmp);
+        }
+    }
+
     // Update the current keyframe with info on what was found in the frame.
     // Strictly speaking this is unnecessary to do every frame, it'll only be
     // needed if the KF gets added to MapMaker. Do it anyway.
@@ -574,7 +587,6 @@ void Tracker::TrackMap() {
             mCurrentKF.dSceneDepthSigma = sqrt((dSumSq / nNum) - (mCurrentKF.dSceneDepthMean) * (mCurrentKF.dSceneDepthMean));
         }
     }
-    mSet = vIterationSet;
 }
 
 // Find points in the image. Uses the PatchFiner struct stored in TrackerData

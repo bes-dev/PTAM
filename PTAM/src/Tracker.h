@@ -30,6 +30,7 @@
 #include <vector>
 #include <list>
 #include "globals.h"
+#include <opencv2/core/core.hpp>
 
 class TrackerData;
 
@@ -56,7 +57,7 @@ public:
     void StopTracking();
 
     KeyFrame& getCurrentKeyFrame();
-    std::vector<TrackerData*> mSet;
+    std::vector<cv::Point2f> cvPoints;
 
 protected:
     KeyFrame mCurrentKF;            // The current working frame as a keyframe struct

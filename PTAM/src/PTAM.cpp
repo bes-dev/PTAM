@@ -51,6 +51,10 @@ std::vector<float> PTAM::getPose() {
     return pose;
 }
 
+std::vector<cv::Point2f> PTAM::getPoints() {
+    return mTracker->cvPoints;
+}
+
 void PTAM::convertOpenCVToCvdByte(const cv::Mat& in, CVD::Image<CVD::byte>& out) {
     cv::Mat clone = in.clone();
     cv::Mat_<cv::Vec3b>& frame_p = (cv::Mat_<cv::Vec3b>&)clone;
