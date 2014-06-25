@@ -45,6 +45,5 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -mtune=corei7 -march=corei7
 
 add_subdirectory(3rdparty)
 add_subdirectory(PTAM)
-add_subdirectory(cvPTAM)
 add_subdirectory(apps)
 add_subdirectory(unit_tests)
