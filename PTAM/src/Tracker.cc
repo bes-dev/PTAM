@@ -244,22 +244,14 @@ void Tracker::TrackMap() {
     vector<TrackerData*> vNextToSearch;
     vector<TrackerData*> vIterationSet;
 
-    // Tunable parameters to do with the coarse tracking stage:
-    static unsigned int gvnCoarseMin = TrackerCoarseMin;   // Min number of large-scale features for coarse stage
-    static unsigned int gvnCoarseMax = TrackerCoarseMax;   // Max number of large-scale features for coarse stage
-    static unsigned int gvnCoarseRange = TrackerCoarseRange;       // Pixel search radius for coarse features
-    static int gvnCoarseSubPixIts = TrackerCoarseSubPixIts; // Max sub-pixel iterations for coarse features
-    static int gvnCoarseDisabled = TrackerDisableCoarse;    // Set this to 1 to disable coarse stage (except after recovery)
-    static double gvdCoarseMinVel = TrackerCoarseMinVelocity;  // Speed above which coarse stage is used.
-
-    unsigned int nCoarseMax = gvnCoarseMax;
-    unsigned int nCoarseRange = gvnCoarseRange;
+    unsigned int nCoarseMax = TrackerCoarseMax;
+    unsigned int nCoarseRange = TrackerCoarseRange;
 
     mbDidCoarse = false;
 
     // Set of heuristics to check if we should do a coarse tracking stage.
     bool bTryCoarse = true;
-    if(gvnCoarseDisabled ||  mdMSDScaledVelocityMagnitude < gvdCoarseMinVel || nCoarseMax == 0) {
+    if(TrackerDisableCoarse ||  mdMSDScaledVelocityMagnitude < TrackerCoarseMinVelocity || nCoarseMax == 0) {
         bTryCoarse = false;
     }
     if(mbJustRecoveredSoUseCoarse) {
@@ -272,7 +264,7 @@ void Tracker::TrackMap() {
     // If we do want to do a coarse stage, also check that there's enough high-level
     // PV map points. We use the lowest-res two pyramid levels (LEVELS-1 and LEVELS-2),
     // with preference to LEVELS-1.
-    if(bTryCoarse && avPVS[LEVELS-1].size() + avPVS[LEVELS-2].size() > gvnCoarseMin ) {
+    if(bTryCoarse && avPVS[LEVELS-1].size() + avPVS[LEVELS-2].size() > TrackerCoarseMin ) {
         // Now, fill the vNextToSearch struct with an appropriate number of
         // TrackerDatas corresponding to coarse map points! This depends on how many
         // there are in different pyramid levels compared to CoarseMin and CoarseMax.
@@ -301,9 +293,9 @@ void Tracker::TrackMap() {
             }
         }
         // Now go and attempt to find these points in the image!
-        unsigned int nFound = SearchForPoints(vNextToSearch, nCoarseRange, gvnCoarseSubPixIts);
+        unsigned int nFound = SearchForPoints(vNextToSearch, nCoarseRange, TrackerCoarseSubPixIts);
         vIterationSet = vNextToSearch;  // Copy over into the to-be-optimised list.
-        if(nFound >= gvnCoarseMin) { // Were enough found to do any meaningful optimisation?
+        if(nFound >= TrackerCoarseMin) { // Were enough found to do any meaningful optimisation?
             mbDidCoarse = true;
             for(int iter = 0; iter<10; iter++) { // If so: do ten Gauss-Newton pose updates iterations.
                 if(iter != 0) { // Re-project the points on all but the first iteration.
