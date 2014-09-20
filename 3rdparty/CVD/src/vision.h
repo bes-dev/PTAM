@@ -308,9 +308,6 @@ int transform(const BasicImage<S>& in, BasicImage<T>& out, const TooN::Matrix<2>
     const TooN::Vector<2> down =   M.T()[1];
    
     const TooN::Vector<2> p0 = inOrig - M*outOrig;
-    const TooN::Vector<2> p1 = p0 + w*across;
-    const TooN::Vector<2> p2 = p0 + h*down;
-    const TooN::Vector<2> p3 = p0 + w*across + h*down;
         
     // ul --> p0
     // ur --> w*across + p0

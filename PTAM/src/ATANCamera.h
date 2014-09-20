@@ -50,9 +50,6 @@ using namespace TooN;
 #include "vector_image_ref.h"
 #include "globals.h"
 
-
-
-
 class CameraCalibrator;
 class CalibImage;
 

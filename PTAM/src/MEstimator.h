@@ -37,12 +37,12 @@ struct Huber {
     inline static double ObjectiveScore(double dErrorSquared, double dSigmaSquared);
 };
 
-struct LeastSquares {
-    inline static double FindSigmaSquared(std::vector<double> &vdErrorSquared);
-    inline static double SquareRootWeight(double dErrorSquared, double dSigmaSquared);
-    inline static double Weight(double dErrorSquared, double dSigmaSquared);
-    inline static double ObjectiveScore(double dErrorSquared, double dSigmaSquared);
-};
+//struct LeastSquares {
+//    inline static double FindSigmaSquared(std::vector<double> &vdErrorSquared);
+//    inline static double SquareRootWeight(double dErrorSquared, double dSigmaSquared);
+//    inline static double Weight(double dErrorSquared, double dSigmaSquared);
+//    inline static double ObjectiveScore(double dErrorSquared, double dSigmaSquared);
+//};
 
 
 inline double Tukey::Weight(double dErrorSquared, double dSigmaSquared) {
@@ -153,27 +153,27 @@ inline double Huber::FindSigmaSquared(std::vector<double> &vdErrorSquared) {
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-inline double LeastSquares::Weight(double dErrorSquared, double dSigmaSquared) {
-    return 1.0;
-}
+//inline double LeastSquares::Weight(double dErrorSquared, double dSigmaSquared) {
+//    return 1.0;
+//}
 
-inline double LeastSquares::SquareRootWeight(double dErrorSquared, double dSigmaSquared) {
-    return 1.0;
-}
+//inline double LeastSquares::SquareRootWeight(double dErrorSquared, double dSigmaSquared) {
+//    return 1.0;
+//}
 
-inline double LeastSquares::ObjectiveScore(double dErrorSquared, const double dSigmaSquared) {
-    return dErrorSquared;
-}
+//inline double LeastSquares::ObjectiveScore(double dErrorSquared, const double dSigmaSquared) {
+//    return dErrorSquared;
+//}
 
-inline double LeastSquares::FindSigmaSquared(std::vector<double> &vdErrorSquared) {
-    if(vdErrorSquared.size() == 0) {
-        return 0.0;
-    }
-    double dSum = 0.0;
-    for(unsigned int i=0; i<vdErrorSquared.size(); i++) {
-        dSum+=vdErrorSquared[i];
-    }
-    return dSum / vdErrorSquared.size();
-}
+//inline double LeastSquares::FindSigmaSquared(std::vector<double> &vdErrorSquared) {
+//    if(vdErrorSquared.size() == 0) {
+//        return 0.0;
+//    }
+//    double dSum = 0.0;
+//    for(unsigned int i=0; i<vdErrorSquared.size(); i++) {
+//        dSum+=vdErrorSquared[i];
+//    }
+//    return dSum / vdErrorSquared.size();
+//}
 
 #endif
