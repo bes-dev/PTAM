@@ -37,9 +37,3 @@ const double MapMakerCandidateMinShiTomasiScore = 70;
 const int nMaxSSDPerPixel  = 500;
 
 #endif
-
-
-
-
-
-

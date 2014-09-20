@@ -9,10 +9,6 @@
 
 using namespace std;
 
-#ifdef WIN32
-inline bool isnan(double d) {return !(d==d);}
-#endif
-
 // Some inlines which replace standard matrix multiplications 
 // with LL-triangle-only versions.
 inline void BundleTriangle_UpdateM6U_LL(Matrix<6> &m6U, Matrix<2,6> &m26A) {
@@ -271,7 +267,6 @@ bool Bundle::Do_LM_Step(bool *pbAbortSignal) {
             // NOISE COVAR OMITTED because it's the 2-Identity
         }
 
-        //            point.m3V += meas.m23B.T() * meas.m23B;             // SLOW-ish this is symmetric too
         BundleTriangle_UpdateM3V_LL(point.m3V, meas.m23B);
         point.v3EpsilonB += meas.m23B.T() * meas.v2Epsilon;
 
@@ -374,13 +369,7 @@ bool Bundle::Do_LM_Step(bool *pbAbortSignal) {
                     m63_MIJW_times_m3VStarInv = pMeas_ij->m63W * p.m3VStarInv;
                 }
                 int nKRow = mvCameras[pMeas_ik->c].nStartRow;
-#ifndef WIN32
                 mS.slice(nJRow, nKRow, 6, 6) -= m63_MIJW_times_m3VStarInv * pMeas_ik->m63W.T();
-#else
-                Matrix<6> m = mS.slice(nJRow, nKRow, 6, 6);
-                m -= m63_MIJW_times_m3VStarInv * pMeas_ik->m63W.T();
-                mS.slice(nJRow, nKRow, 6, 6) = m;
-#endif
                 assert(nKRow < nJRow);
             }
         }
