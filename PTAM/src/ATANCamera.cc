@@ -174,34 +174,4 @@ void ATANCamera::DisableRadialDistortion() {
     RefreshParams();
 }
 
-//Vector<2> ATANCamera::UFBProject(const Vector<2>& vCam) {
-//    // Project from camera z=1 plane to UFB, storing intermediate calc results.
-//    mvLastCam = vCam;
-//    mdLastR = sqrt(vCam * vCam);
-//    mbInvalid = (mdLastR > mdMaxR);
-//    mdLastFactor = rtrans_factor(mdLastR);
-//    mdLastDistR = mdLastFactor * mdLastR;
-//    mvLastDistCam = mdLastFactor * mvLastCam;
-
-//    mvLastIm[0] = (mgvvCameraParams)[2]  + (mgvvCameraParams)[0] * mvLastDistCam[0];
-//    mvLastIm[1] = (mgvvCameraParams)[3]  + (mgvvCameraParams)[1] * mvLastDistCam[1];
-//    return mvLastIm;
-//}
-
-//Vector<2> ATANCamera::UFBUnProject(const Vector<2>& v2Im) {
-//    mvLastIm = v2Im;
-//    mvLastDistCam[0] = (mvLastIm[0] - (mgvvCameraParams)[2]) / (mgvvCameraParams)[0];
-//    mvLastDistCam[1] = (mvLastIm[1] - (mgvvCameraParams)[3]) / (mgvvCameraParams)[1];
-//    mdLastDistR = sqrt(mvLastDistCam * mvLastDistCam);
-//    mdLastR = invrtrans(mdLastDistR);
-//    double dFactor;
-//    if(mdLastDistR > 0.01)
-//        dFactor =  mdLastR / mdLastDistR;
-//    else
-//        dFactor = 1.0;
-//    mdLastFactor = 1.0 / dFactor;
-//    mvLastCam = dFactor * mvLastDistCam;
-//    return mvLastCam;
-//}
-
 const Vector<NUMTRACKERCAMPARAMETERS> ATANCamera::mvDefaultParams = makeVector(0.5, 0.75, 0.5, 0.5, 0.1);

@@ -498,9 +498,7 @@ bool Bundle::Do_LM_Step(bool *pbAbortSignal) {
 // new coordinates
 template<class MEstimator>
 double Bundle::FindNewError() {
-    ofstream ofs;
     double dNewError = 0;
-    vector<double> vdErrorSquared;
     for(list<Meas>::iterator itr = mMeasList.begin(); itr!=mMeasList.end(); itr++) {
         Meas &meas = *itr;
         // Project the point.
