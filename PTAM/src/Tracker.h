@@ -31,19 +31,14 @@
 #include <list>
 #include "globals.h"
 #include <opencv2/core/core.hpp>
+#include "StereoInit.h"
 
 class TrackerData;
-
-// This struct is used for initial correspondences of the first stereo pair.
-struct Trail {
-    MiniPatch mPatch;
-    CVD::ImageRef irCurrentPos;
-    CVD::ImageRef irInitialPos;
-};
 
 class Tracker {
 public:
     Tracker(CVD::ImageRef irVideoSize, const ATANCamera &c, Map &m, MapMaker &mm);
+    ~Tracker();
 
     // TrackFrame is the main working part of the tracker: call this every frame.
     void TrackFrame(CVD::Image<CVD::byte> &imFrame);
@@ -72,14 +67,9 @@ protected:
 
     void Reset();                   // Restart from scratch. Also tells the mapmaker to reset itself.
 
+
     // The following members are used for initial map tracking (to get the first stereo pair and correspondences):
-    void TrackForInitialMap();      // This is called by TrackFrame if there is not a map yet.
-    enum {TRAIL_TRACKING_NOT_STARTED, TRAIL_TRACKING_STARTED, TRAIL_TRACKING_COMPLETE} mnInitialStage;  // How far are we towards making the initial map?
-    void TrailTracking_Start();     // First frame of initial trail tracking. Called by TrackForInitialMap.
-    int  TrailTracking_Advance();   // Steady-state of initial trail tracking. Called by TrackForInitialMap.
-    std::list<Trail> mlTrails;      // Used by trail tracking
-    KeyFrame mFirstKF;              // First of the stereo pair
-    KeyFrame mPreviousFrameKF;      // Used by trail tracking to check married matches
+    StereoInit *mStereoInit;
 
     // Methods for tracking the map once it has been made:
     void TrackMap();                // Called by TrackFrame if there is a map.
