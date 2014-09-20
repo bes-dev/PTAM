@@ -67,35 +67,6 @@ void ATANCamera::RefreshParams() {
         Vector<2> v2Diff = v2Center - v2RootTwoAway;
         mdOnePixelDist = sqrt(v2Diff * v2Diff) / sqrt(2.0);
     }
-
-    // Work out the linear projection values for the UFB
-    {
-        // First: Find out how big the linear bounding rectangle must be
-        vector<Vector<2> > vv2Verts;
-        vv2Verts.push_back(UnProject(makeVector( -0.5, -0.5)));
-        vv2Verts.push_back(UnProject(makeVector( mvImageSize[0]-0.5, -0.5)));
-        vv2Verts.push_back(UnProject(makeVector( mvImageSize[0]-0.5, mvImageSize[1]-0.5)));
-        vv2Verts.push_back(UnProject(makeVector( -0.5, mvImageSize[1]-0.5)));
-        Vector<2> v2Min = vv2Verts[0];
-        Vector<2> v2Max = vv2Verts[0];
-        for(int i=0; i<4; i++) {
-            for(int j=0; j<2; j++) {
-                if(vv2Verts[i][j] < v2Min[j]) v2Min[j] = vv2Verts[i][j];
-                if(vv2Verts[i][j] > v2Max[j]) v2Max[j] = vv2Verts[i][j];
-            }
-        }
-        mvImplaneTL = v2Min;
-        mvImplaneBR = v2Max;
-
-        // Store projection parameters to fill this bounding box
-        Vector<2> v2Range = v2Max - v2Min;
-        mvUFBLinearInvFocal = v2Range;
-        mvUFBLinearFocal[0] = 1.0 / mvUFBLinearInvFocal[0];
-        mvUFBLinearFocal[1] = 1.0 / mvUFBLinearInvFocal[1];
-        mvUFBLinearCenter[0] = -1.0 * v2Min[0] * mvUFBLinearFocal[0];
-        mvUFBLinearCenter[1] = -1.0 * v2Min[1] * mvUFBLinearFocal[1];
-    }
-
 }
 
 // Project from the camera z=1 plane to image pixels,
@@ -130,35 +101,6 @@ Vector<2> ATANCamera::UnProject(const Vector<2>& v2Im) {
     mdLastFactor = 1.0 / dFactor;
     mvLastCam = dFactor * mvLastDistCam;
     return mvLastCam;
-}
-
-// Utility function for easy drawing with OpenGL
-// C.f. comment in top of ATANCamera.h
-Matrix<4> ATANCamera::MakeUFBLinearFrustumMatrix(double near, double far) {
-    Matrix<4> m4 = Zeros;
-
-
-    double left = mvImplaneTL[0] * near;
-    double right = mvImplaneBR[0] * near;
-    double top = mvImplaneTL[1] * near;
-    double bottom = mvImplaneBR[1] * near;
-
-    // The openGhelL frustum manpage is A PACK OF LIES!!
-    // Two of the elements are NOT what the manpage says they should be.
-    // Anyway, below code makes a frustum projection matrix
-    // Which projects a RHS-coord frame with +z in front of the camera
-    // Which is what I usually want, instead of glFrustum's LHS, -z idea.
-    m4[0][0] = (2 * near) / (right - left);
-    m4[1][1] = (2 * near) / (top - bottom);
-
-    m4[0][2] = (right + left) / (left - right);
-    m4[1][2] = (top + bottom) / (bottom - top);
-    m4[2][2] = (far + near) / (far - near);
-    m4[3][2] = 1;
-
-    m4[2][3] = 2*near*far / (near - far);
-
-    return m4;
 }
 
 Matrix<2,2> ATANCamera::GetProjectionDerivs() {
@@ -232,34 +174,34 @@ void ATANCamera::DisableRadialDistortion() {
     RefreshParams();
 }
 
-Vector<2> ATANCamera::UFBProject(const Vector<2>& vCam) {
-    // Project from camera z=1 plane to UFB, storing intermediate calc results.
-    mvLastCam = vCam;
-    mdLastR = sqrt(vCam * vCam);
-    mbInvalid = (mdLastR > mdMaxR);
-    mdLastFactor = rtrans_factor(mdLastR);
-    mdLastDistR = mdLastFactor * mdLastR;
-    mvLastDistCam = mdLastFactor * mvLastCam;
+//Vector<2> ATANCamera::UFBProject(const Vector<2>& vCam) {
+//    // Project from camera z=1 plane to UFB, storing intermediate calc results.
+//    mvLastCam = vCam;
+//    mdLastR = sqrt(vCam * vCam);
+//    mbInvalid = (mdLastR > mdMaxR);
+//    mdLastFactor = rtrans_factor(mdLastR);
+//    mdLastDistR = mdLastFactor * mdLastR;
+//    mvLastDistCam = mdLastFactor * mvLastCam;
 
-    mvLastIm[0] = (mgvvCameraParams)[2]  + (mgvvCameraParams)[0] * mvLastDistCam[0];
-    mvLastIm[1] = (mgvvCameraParams)[3]  + (mgvvCameraParams)[1] * mvLastDistCam[1];
-    return mvLastIm;
-}
+//    mvLastIm[0] = (mgvvCameraParams)[2]  + (mgvvCameraParams)[0] * mvLastDistCam[0];
+//    mvLastIm[1] = (mgvvCameraParams)[3]  + (mgvvCameraParams)[1] * mvLastDistCam[1];
+//    return mvLastIm;
+//}
 
-Vector<2> ATANCamera::UFBUnProject(const Vector<2>& v2Im) {
-    mvLastIm = v2Im;
-    mvLastDistCam[0] = (mvLastIm[0] - (mgvvCameraParams)[2]) / (mgvvCameraParams)[0];
-    mvLastDistCam[1] = (mvLastIm[1] - (mgvvCameraParams)[3]) / (mgvvCameraParams)[1];
-    mdLastDistR = sqrt(mvLastDistCam * mvLastDistCam);
-    mdLastR = invrtrans(mdLastDistR);
-    double dFactor;
-    if(mdLastDistR > 0.01)
-        dFactor =  mdLastR / mdLastDistR;
-    else
-        dFactor = 1.0;
-    mdLastFactor = 1.0 / dFactor;
-    mvLastCam = dFactor * mvLastDistCam;
-    return mvLastCam;
-}
+//Vector<2> ATANCamera::UFBUnProject(const Vector<2>& v2Im) {
+//    mvLastIm = v2Im;
+//    mvLastDistCam[0] = (mvLastIm[0] - (mgvvCameraParams)[2]) / (mgvvCameraParams)[0];
+//    mvLastDistCam[1] = (mvLastIm[1] - (mgvvCameraParams)[3]) / (mgvvCameraParams)[1];
+//    mdLastDistR = sqrt(mvLastDistCam * mvLastDistCam);
+//    mdLastR = invrtrans(mdLastDistR);
+//    double dFactor;
+//    if(mdLastDistR > 0.01)
+//        dFactor =  mdLastR / mdLastDistR;
+//    else
+//        dFactor = 1.0;
+//    mdLastFactor = 1.0 / dFactor;
+//    mvLastCam = dFactor * mvLastDistCam;
+//    return mvLastCam;
+//}
 
 const Vector<NUMTRACKERCAMPARAMETERS> ATANCamera::mvDefaultParams = makeVector(0.5, 0.75, 0.5, 0.5, 0.1);

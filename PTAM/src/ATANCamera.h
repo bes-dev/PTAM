@@ -84,11 +84,6 @@ public:
     Vector<2> UnProject(const Vector<2>& imframe); // Inverse operation
     inline Vector<2> UnProject(CVD::ImageRef ir)  { return UnProject(vec(ir)); }
 
-    Vector<2> UFBProject(const Vector<2>& camframe);
-    Vector<2> UFBUnProject(const Vector<2>& camframe);
-    inline Vector<2> UFBLinearProject(const Vector<2>& camframe);
-    inline Vector<2> UFBLinearUnProject(const Vector<2>& fbframe);
-
     Matrix<2,2> GetProjectionDerivs(); // Projection jacobian
 
     inline bool Invalid() {
@@ -106,9 +101,6 @@ public:
     // The z=1 plane bounding box of what the camera can see
     inline Vector<2> ImplaneTL();
     inline Vector<2> ImplaneBR();
-
-    // OpenGL helper function
-    Matrix<4> MakeUFBLinearFrustumMatrix(double near, double far);
 
     // Feedback for Camera Calibrator
     double PixelAspectRatio() {
@@ -147,11 +139,6 @@ protected:
     Vector<2> mvFocal;      // Pixel focal length
     Vector<2> mvInvFocal;   // Inverse pixel focal length
     Vector<2> mvImageSize;
-    Vector<2> mvUFBLinearFocal;
-    Vector<2> mvUFBLinearInvFocal;
-    Vector<2> mvUFBLinearCenter;
-    Vector<2> mvImplaneTL;
-    Vector<2> mvImplaneBR;
 
     // Radial distortion transformation factor: returns ration of distorted / undistorted radius.
     inline double rtrans_factor(double r) {
@@ -168,27 +155,9 @@ protected:
         return(tan(r * mdW) * mdOneOver2Tan);
     }
 
-//    std::string msName;
-
     friend class CameraCalibrator;   // friend declarations allow access to calibration jacobian and camera update function.
     friend class CalibImage;
 };
-
-// Some inline projection functions:
-inline Vector<2> ATANCamera::UFBLinearProject(const Vector<2>& camframe) {
-    Vector<2> v2Res;
-    v2Res[0] = camframe[0] * mvUFBLinearFocal[0] + mvUFBLinearCenter[0];
-    v2Res[1] = camframe[1] * mvUFBLinearFocal[1] + mvUFBLinearCenter[1];
-    return v2Res;
-}
-
-inline Vector<2> ATANCamera::UFBLinearUnProject(const Vector<2>& fbframe) {
-    Vector<2> v2Res;
-    v2Res[0] = (fbframe[0] - mvUFBLinearCenter[0]) * mvUFBLinearInvFocal[0];
-    v2Res[1] = (fbframe[1] - mvUFBLinearCenter[1]) * mvUFBLinearInvFocal[1];
-    return v2Res;
-}
-
 
 #endif
 
