@@ -153,7 +153,9 @@ void Tracker::TrackFrame(Image<byte> &imFrame) {
         }
     }
     else {// If there is no map, try to make one.
-        mStereoInit->process(mCurrentKF, mse3CamFromWorld, mbUserPressedSpacebar);
+        if(mStereoInit->process(mCurrentKF, mse3CamFromWorld, mbUserPressedSpacebar)) {
+            Reset();
+        }
     }
 }
 
