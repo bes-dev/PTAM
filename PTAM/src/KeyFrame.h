@@ -87,6 +87,8 @@ struct KeyFrame
     double dSceneDepthSigma;
 
     SmallBlurryImage *pSBI; // The relocaliser uses this
+
+    double dSceneDepthMedian;	// used to keep same scale after auto-re-init
 };
 
 typedef std::map<MapPoint*, Measurement>::iterator meas_it;  // For convenience, and to work around an emacs paren-matching bug

@@ -5,9 +5,9 @@
 
 int main() {
     ptam::PTAM mPTAM(cv::Size(640, 480));
-    cv::VideoCapture cap("/home/sergei/Videos/slam_clip.avi");
+    cv::VideoCapture cap("/home/sergei/Videos/clip.avi");
     cv::Mat frame;
-    bool startTracking = true;
+    bool startTracking = false;
     while(true) {
         cap >> frame;
         if(startTracking) {

@@ -30,7 +30,7 @@ Tracker::Tracker(ImageRef irVideoSize, const ATANCamera &c, Map &m, MapMaker &mm
     mpSBILastFrame = NULL;
     mpSBIThisFrame = NULL;
 
-    mStereoInit = new StereoInit(mMapMaker);
+    mStereoInit = new StereoInit(mMapMaker, mCamera, mMap);
 
     // Most of the initialisation is done in Reset()
     Reset();

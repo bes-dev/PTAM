@@ -50,6 +50,9 @@ public:
     bool IsDistanceToNearestKeyFrameExcessive(KeyFrame &kCurrent);  // Is the camera far away from the nearest KeyFrame (i.e. maybe lost?)
     void save(std::string path); //save MapMaker in file
 
+    //TODO: i don't know, may be it shoud be private
+    void ApplyGlobalTransformationToMap(SE3<> se3NewFromOld);
+    void ApplyGlobalScaleToMap(double dScale);
 protected:
     Map &mMap;               // The map
     ATANCamera mCamera;      // Same as the tracker's camera: N.B. not a reference variable!
@@ -57,8 +60,6 @@ protected:
 
     // Functions for starting the map from scratch:
     SE3<> CalcPlaneAligner();
-    void ApplyGlobalTransformationToMap(SE3<> se3NewFromOld);
-    void ApplyGlobalScaleToMap(double dScale);
 
     // Map expansion functions:
     void AddKeyFrameFromTopOfQueue();

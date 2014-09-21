@@ -21,15 +21,18 @@ struct Trail {
 
 class StereoInit {
 public:
-    StereoInit(MapMaker& mm);
+    StereoInit(MapMaker& mm, ATANCamera &mc, Map &map);
     int process(KeyFrame& mCurrentKF, SE3<>& mse3CamFromWorld, bool& mbUserPressedSpacebar);
 protected:
     MapMaker &mMapMaker;            // The class which maintains the map
+    ATANCamera &mCamera;             // Projection model
+    Map &mMap;                      // The map, consisting of points and keyframes
     bool mIsFirstFrame;
 
     void Reset();
 
     // The following members are used for initial map tracking (to get the first stereo pair and correspondences):
+    Vector<3> CalcSBIRotation(SmallBlurryImage *SBI1, SmallBlurryImage *SBI2);
     int TrackForInitialMap(KeyFrame &mCurrentKF, SE3<>& mse3CamFromWorld, bool& mbUserPressedSpacebar);      // This is called by TrackFrame if there is not a map yet.
     enum {TRAIL_TRACKING_NOT_STARTED, TRAIL_TRACKING_STARTED, TRAIL_TRACKING_COMPLETE} mnInitialStage;  // How far are we towards making the initial map?
     void TrailTracking_Start(KeyFrame &mCurrentKF);     // First frame of initial trail tracking. Called by TrackForInitialMap.
@@ -37,6 +40,8 @@ protected:
     std::list<Trail> mlTrails;      // Used by trail tracking
     KeyFrame mFirstKF;              // First of the stereo pair
     KeyFrame mPreviousFrameKF;      // Used by trail tracking to check married matches
+
+    KeyFrame mOldKF;
 
 };
 
